@@ -19,7 +19,7 @@ RTC_DS3231 rtc;
 // initialize the library with the numbers of the interface pins
 LiquidCrystal lcd(7, 8, 9, 10, 11, 12);
 
-int buzzer = 12;//the pin of the active buzzer
+int buzzer = 13;//the pin of the active buzzer
 
 char daysOfTheWeek[7][12] = {
   "Sunday",
@@ -30,6 +30,12 @@ char daysOfTheWeek[7][12] = {
   "Friday",
   "Saturday"
 };
+
+// event from 13:50 to 14:10
+uint8_t DAILY_EVENT_START_HH = 7; // event start time: hour
+uint8_t DAILY_EVENT_START_MM = 30; // event start time: minute
+uint8_t DAILY_EVENT_END_HH   = 8; // event end time: hour
+uint8_t DAILY_EVENT_END_MM   = 0; // event end time: minute
 
 void setup () {
   Serial.begin(9600);
@@ -80,6 +86,14 @@ void loop () {
     lcd.print(now.month(), DEC);
     lcd.print('/');
     lcd.print(now.year(), DEC);
+  }
+
+  if (now.hour() >= DAILY_EVENT_START_HH && now.minute() >= DAILY_EVENT_START_MM && now.hour() < DAILY_EVENT_END_HH && now.minute() < DAILY_EVENT_END_MM) {
+    Serial.println("WAKE UP....GRAB A BRUSH AND PUT A LITTLE MAKE UP");
+    digitalWrite(buzzer, HIGH);
+  }
+  else{
+    digitalWrite(buzzer, LOW);
   }
 
   delay(1000); // delay 1 seconds
